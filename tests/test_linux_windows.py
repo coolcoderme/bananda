@@ -16,6 +16,8 @@ def test_linux_transpile_is_cpp():
     assert "bananda::Widget* build() override" in cpp
     assert "new bananda::BoxLayout()" in cpp
     assert "new bananda::Button()" in cpp
+    assert "root->addWidget" in cpp
+    assert "this->counterLabel->text" in cpp
     assert "int main()" in cpp
     assert "MainActivity" not in cpp
     assert "package com." not in cpp

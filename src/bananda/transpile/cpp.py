@@ -38,6 +38,7 @@ class _CppEmitter(ast.NodeVisitor):
         self._class_fields: dict[str, str] = {}
         self._declared_fields: set[str] = set()
         self._local_names: list[set[str]] = [set()]
+        self._pointer_names: set[str] = set()
         self._in_class: str | None = None
         self._current_method: str | None = None
 
@@ -141,6 +142,8 @@ class _CppEmitter(ast.NodeVisitor):
             if not self.is_local(local_name) and local_name not in self._declared_fields:
                 prefix = "auto "
                 self.declare_local(local_name)
+            if self._is_widget_value(node.value):
+                self._pointer_names.add(local_name)
         target = self.expr(node.targets[0])
         self.emit(f"{prefix}{target} = {self.expr(node.value)};")
 
@@ -361,6 +364,7 @@ class _CppEmitter(ast.NodeVisitor):
         camel = to_camel(name)
         if inferred.endswith("*"):
             self._class_fields[name] = f"{inferred} {camel} = nullptr;"
+            self._pointer_names.add(name)
         elif inferred == "std::string":
             default = self.expr(value) if isinstance(value, (ast.Constant, ast.JoinedStr)) else '""'
             self._class_fields[name] = f"std::string {camel} = {default};"
@@ -412,11 +416,22 @@ class _CppEmitter(ast.NodeVisitor):
 
     def expr_Attribute(self, node: ast.Attribute) -> str:
         attr = to_camel(node.attr)
-        if attr == "trim":
-            return "trim"
         if isinstance(node.value, ast.Name) and node.value.id == "self":
             return f"this->{attr}"
-        return f"{self.expr(node.value)}.{attr}"
+        op = "->" if self._is_pointer_expr(node.value) else "."
+        return f"{self.expr(node.value)}{op}{attr}"
+
+    def _is_widget_value(self, node: ast.AST) -> bool:
+        return isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in WIDGET_TYPES
+
+    def _is_pointer_expr(self, node: ast.AST) -> bool:
+        if self._is_widget_value(node):
+            return True
+        if isinstance(node, ast.Name):
+            return node.id in self._pointer_names
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "self":
+            return node.attr in self._pointer_names
+        return False
 
     def expr_Call(self, node: ast.Call) -> str:
         if isinstance(node.func, ast.Name):
@@ -433,8 +448,6 @@ class _CppEmitter(ast.NodeVisitor):
             return self._bind_call(node)
         func = self.expr(node.func)
         args = ", ".join(self.expr(arg) for arg in node.args)
-        if func.startswith("this->"):
-            return f"{func}({args})"
         return f"{func}({args})"
 
     def _widget_ctor(self, node: ast.Call) -> str:

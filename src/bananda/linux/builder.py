@@ -30,7 +30,15 @@ def build_linux(
     cmake_bin = cmake or find_cmake()
     env = os.environ.copy()
     configure = subprocess.run(
-        [cmake_bin, "-S", str(root), "-B", str(build_dir), "-DCMAKE_BUILD_TYPE=Release"],
+        [
+            cmake_bin,
+            "-S",
+            str(root),
+            "-B",
+            str(build_dir),
+            "-DCMAKE_BUILD_TYPE=Release",
+            "-DCMAKE_CXX_COMPILER=g++",
+        ],
         check=False,
         capture_output=True,
         text=True,
