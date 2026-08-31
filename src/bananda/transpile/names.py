@@ -87,6 +87,18 @@ def to_camel(name: str) -> str:
     return prefix + camel
 
 
+def to_pascal(name: str) -> str:
+    """Convert a Python identifier to C# PascalCase."""
+    camel = to_camel(name)
+    prefix = ""
+    while camel.startswith("_"):
+        prefix += "_"
+        camel = camel[1:]
+    if not camel:
+        return name
+    return prefix + camel[:1].upper() + camel[1:]
+
+
 def kotlin_package(python_package: str) -> str:
     return python_package
 

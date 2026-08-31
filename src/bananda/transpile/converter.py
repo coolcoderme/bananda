@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Iterable
 
 from bananda.exceptions import BanandaTranspileError
+from bananda.targets import Target
 from bananda.transpile.names import (
     BANANDA_MODULES,
     OVERRIDE_METHODS,
@@ -25,6 +26,7 @@ class TranspileResult:
     package: str
     title: str = "BanANDa"
     warnings: list[str] = field(default_factory=list)
+    target: Target = Target.ANDROID
 
     @property
     def kotlin(self) -> str:
@@ -37,12 +39,14 @@ def transpile_file(
     path: str | Path,
     *,
     package: str | None = None,
+    target: str | Target = Target.ANDROID,
 ) -> TranspileResult:
     source_path = Path(path)
     return transpile_source(
         source_path.read_text(encoding="utf-8"),
         filename=str(source_path),
         package=package,
+        target=target,
     )
 
 
@@ -51,12 +55,27 @@ def transpile_source(
     *,
     filename: str = "<app>",
     package: str | None = None,
+    target: str | Target = Target.ANDROID,
 ) -> TranspileResult:
+    resolved = Target.parse(target)
+    pkg = package or "com.bananda.app"
+    if resolved is Target.LINUX:
+        from bananda.transpile.cpp import transpile_cpp
+
+        return transpile_cpp(source, filename=filename, package=pkg)
+    if resolved is Target.WINDOWS:
+        from bananda.transpile.csharp import transpile_csharp
+
+        return transpile_csharp(source, filename=filename, package=pkg)
     try:
         tree = ast.parse(source, filename=filename)
     except SyntaxError as exc:
         raise BanandaTranspileError(exc.msg, filename=filename, lineno=exc.lineno) from exc
-    emitter = _KotlinEmitter(filename=filename, package=package or "com.bananda.app")
+    emitter = _KotlinEmitter(
+        filename=filename,
+        package=pkg,
+        target=resolved,
+    )
     try:
         emitter.visit(tree)
     except BanandaTranspileError:
@@ -67,9 +86,10 @@ def transpile_source(
 
 
 class _KotlinEmitter(ast.NodeVisitor):
-    def __init__(self, filename: str, package: str) -> None:
+    def __init__(self, filename: str, package: str, target: Target = Target.ANDROID) -> None:
         self.filename = filename
         self.package = package
+        self.target = target
         self.indent = 0
         self.lines: list[str] = []
         self.app_class = ""
@@ -102,6 +122,7 @@ class _KotlinEmitter(ast.NodeVisitor):
             package=self.package,
             title=self.title,
             warnings=self.warnings,
+            target=self.target,
         )
 
     def _main_activity(self) -> str:

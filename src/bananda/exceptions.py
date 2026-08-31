@@ -6,7 +6,7 @@ class BanandaError(Exception):
 
 
 class BanandaTranspileError(BanandaError):
-    """Python source could not be converted to Kotlin."""
+    """Python source could not be converted to the target language."""
 
     def __init__(self, message: str, filename: str | None = None, lineno: int | None = None):
         self.filename = filename
@@ -20,4 +20,4 @@ class BanandaTranspileError(BanandaError):
 
 
 class BanandaBuildError(BanandaError):
-    """Android project generation or APK compilation failed."""
+    """Project generation or native compilation failed."""

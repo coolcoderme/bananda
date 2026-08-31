@@ -1,8 +1,8 @@
 """BanANDa test application: a counter and greeting demo.
 
 This file is ordinary Python that uses the BanANDa widget API. ``bananda build``
-converts it to Kotlin and packages a native APK — the Android app does not
-embed a Python interpreter.
+converts it to Kotlin (Android), C++ (Linux), or C# (Windows). The shipped
+binary does not embed a Python interpreter.
 """
 
 from bananda import App, BoxLayout, Button, Label, TextInput

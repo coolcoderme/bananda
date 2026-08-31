@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import os
-import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
 from bananda.exceptions import BanandaBuildError
+from bananda.tooling import find_gradle, java_home
 
 
 @dataclass
@@ -33,11 +33,11 @@ def build_apk(
         )
     (root / "local.properties").write_text(f"sdk.dir={_escape_prop(sdk)}\n", encoding="utf-8")
 
-    gradle_bin = gradle or _find_gradle()
+    gradle_bin = gradle or find_gradle()
     env = os.environ.copy()
     env["ANDROID_SDK_ROOT"] = str(sdk)
     env["ANDROID_HOME"] = str(sdk)
-    env.setdefault("JAVA_HOME", _java_home())
+    env.setdefault("JAVA_HOME", java_home())
 
     command = [gradle_bin, "--no-daemon", "assembleDebug"]
     try:
@@ -67,30 +67,6 @@ def build_apk(
 def _find_apk(root: Path) -> Path | None:
     matches = sorted((root / "app" / "build" / "outputs" / "apk").rglob("*.apk"))
     return matches[0] if matches else None
-
-
-def _find_gradle() -> str:
-    for candidate in (
-        os.environ.get("BANANDA_GRADLE"),
-        shutil.which("gradle"),
-        str(Path.home() / "gradle-dist" / "gradle-8.10.2" / "bin" / "gradle"),
-        "/home/ubuntu/gradle-dist/gradle-8.10.2/bin/gradle",
-    ):
-        if candidate and Path(candidate).exists():
-            return candidate
-    return "gradle"
-
-
-def _java_home() -> str:
-    if os.environ.get("JAVA_HOME"):
-        return os.environ["JAVA_HOME"]
-    java = shutil.which("java")
-    if java:
-        real = Path(java).resolve()
-        # /usr/bin/java → /usr/lib/jvm/.../bin/java
-        if real.parent.name == "bin":
-            return str(real.parent.parent)
-    return "/usr/lib/jvm/java-21-openjdk-amd64"
 
 
 def _escape_prop(path: Path) -> str:

@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "bananda"
 version = "0.1.0"
-description = "Kivy-like Python UI that transpiles to Kotlin and builds Android APKs — no interpreter on device."
+description = "Kivy-like Python UI that transpiles to Kotlin (Android), C++ (Linux), and C# (Windows) — no interpreter in the shipped app."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 authors = [{ name = "coolcoderme" }]
-keywords = ["android", "kotlin", "kivy", "transpile", "apk"]
+keywords = ["android", "linux", "windows", "kotlin", "cpp", "csharp", "kivy", "transpile", "apk"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",

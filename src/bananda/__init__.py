@@ -1,4 +1,4 @@
-"""BanANDa: write Android apps in Python, ship Kotlin — no interpreter on device."""
+"""BanANDa: write apps in Python, ship Kotlin/C++/C# — no interpreter in the binary."""
 
 from bananda.app import App
 from bananda.uix.buttons import Button
