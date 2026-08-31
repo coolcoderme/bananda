@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 WIDGET_TYPES = {
-    "App",
     "Widget",
     "BoxLayout",
     "GridLayout",

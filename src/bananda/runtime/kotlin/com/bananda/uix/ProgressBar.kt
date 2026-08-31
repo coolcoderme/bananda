@@ -5,15 +5,15 @@ import android.view.View
 import android.widget.ProgressBar as AndroidProgressBar
 
 class ProgressBar(
-    value: Double = 0.0,
-    max: Double = 100.0,
+    value: Number = 0,
+    max: Number = 100,
 ) : Widget() {
-    var value: Double = value
+    var value: Double = value.toDouble()
         set(newValue) {
             field = newValue
             (androidView as? AndroidProgressBar)?.progress = newValue.toInt()
         }
-    var max: Double = max
+    var max: Double = max.toDouble()
 
     override fun createView(context: Context): View {
         val view = AndroidProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)

@@ -8,7 +8,7 @@ import com.google.android.material.button.MaterialButton
 
 class Button(
     text: String = "",
-    fontSize: Double = 16.0,
+    fontSize: Number = 16,
     color: String = "#3D2E00",
     backgroundColor: String? = "#F4C430",
     onPress: BanandaHandler? = null,
@@ -18,7 +18,7 @@ class Button(
             field = value
             (androidView as? MaterialButton)?.text = value
         }
-    var fontSize: Double = fontSize
+    var fontSize: Double = fontSize.toDouble()
     var color: String = color
     var onPress: BanandaHandler? = onPress
 

@@ -9,7 +9,7 @@ import android.widget.TextView
 
 class Label(
     text: String = "",
-    fontSize: Double = 16.0,
+    fontSize: Number = 16,
     color: String = "#1A1A1A",
     bold: Boolean = false,
     halign: String = "left",
@@ -19,7 +19,7 @@ class Label(
             field = value
             (androidView as? TextView)?.text = value
         }
-    var fontSize: Double = fontSize
+    var fontSize: Double = fontSize.toDouble()
         set(value) {
             field = value
             (androidView as? TextView)?.setTextSize(TypedValue.COMPLEX_UNIT_SP, value.toFloat())

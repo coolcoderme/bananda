@@ -30,6 +30,8 @@ def test_demo_app_transpiles_to_kotlin():
     result = transpile_file(EXAMPLE, package="com.bananda.examples.hellobananda")
     kotlin = result.kotlin
     assert result.app_class == "DemoApp"
+    assert "import com.bananda.app.App" in kotlin
+    assert "import com.bananda.uix.App" not in kotlin
     assert "class DemoApp : App()" in kotlin
     assert "onPress = this::increment" in kotlin
     assert "onPress = this::decrement" in kotlin

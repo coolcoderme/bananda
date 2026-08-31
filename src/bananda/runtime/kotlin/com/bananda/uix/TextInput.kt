@@ -12,7 +12,7 @@ class TextInput(
     text: String = "",
     hintText: String = "",
     multiline: Boolean = false,
-    fontSize: Double = 16.0,
+    fontSize: Number = 16,
     onText: BanandaValueHandler? = null,
 ) : Widget() {
     var text: String = text
@@ -26,7 +26,7 @@ class TextInput(
         }
     var hintText: String = hintText
     var multiline: Boolean = multiline
-    var fontSize: Double = fontSize
+    var fontSize: Double = fontSize.toDouble()
     var onText: BanandaValueHandler? = onText
 
     override fun createView(context: Context): View {

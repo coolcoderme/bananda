@@ -7,11 +7,11 @@ import android.widget.GridLayout as AndroidGridLayout
 class GridLayout(
     cols: Int = 1,
     rows: Int = 0,
-    spacing: Double = 0.0,
+    spacing: Number = 0,
 ) : Widget() {
     var cols: Int = cols
     var rows: Int = rows
-    var spacing: Double = spacing
+    var spacing: Double = spacing.toDouble()
 
     override fun createView(context: Context): View {
         val layout = AndroidGridLayout(context)

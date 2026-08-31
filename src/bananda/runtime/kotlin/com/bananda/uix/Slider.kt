@@ -5,14 +5,14 @@ import android.view.View
 import android.widget.SeekBar
 
 class Slider(
-    min: Double = 0.0,
-    max: Double = 100.0,
-    value: Double = 0.0,
+    min: Number = 0,
+    max: Number = 100,
+    value: Number = 0,
     onValue: BanandaHandler? = null,
 ) : Widget() {
-    var min: Double = min
-    var max: Double = max
-    var value: Double = value
+    var min: Double = min.toDouble()
+    var max: Double = max.toDouble()
+    var value: Double = value.toDouble()
         set(newValue) {
             field = newValue
             (androidView as? SeekBar)?.progress = toProgress(newValue)

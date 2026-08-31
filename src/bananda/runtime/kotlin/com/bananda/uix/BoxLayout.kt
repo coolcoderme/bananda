@@ -7,17 +7,17 @@ import android.widget.Space
 
 class BoxLayout(
     orientation: String = "vertical",
-    spacing: Double = 0.0,
-    padding: Double = 0.0,
+    spacing: Number = 0,
+    padding: Number = 0,
     sizeHint: SizeHint = SizeHint(1.0, 1.0),
     height: Any = "wrap",
     width: Any = "wrap",
 ) : Widget() {
     var orientation: String = orientation
-    var spacing: Double = spacing
+    var spacing: Double = spacing.toDouble()
 
     init {
-        this.padding = padding
+        this.padding = padding.toDouble()
         this.sizeHint = sizeHint
         this.height = height
         this.width = width

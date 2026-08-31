@@ -20,6 +20,8 @@ class Hello(App):
 """
     out = kotlin(src)
     assert "package com.example.demo" in out
+    assert "import com.bananda.app.App" in out
+    assert "import com.bananda.uix.App" not in out
     assert "class Hello : App()" in out
     assert "override var title: String = \"Hi\"" in out
     assert "override fun build(): Widget" in out
